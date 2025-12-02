@@ -11,7 +11,7 @@ type Product struct {
 	CategoryID primitive.ObjectID `bson:"category_id" json:"category_id"`
 	StoreID    primitive.ObjectID `bson:"store_id" json:"store_id"`
 
-	Title       string        `bson:"title" json:"title"`
+	Name        string        `bson:"name" json:"name"`
 	Description string        `bson:"description" json:"description"`
 	Status      ProductStatus `bson:"status" json:"status"`
 
@@ -46,15 +46,15 @@ type ProductVariant struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty" json:"id"`
 	ProductID primitive.ObjectID `bson:"product_id" json:"product_id"`
 
-	SKU  string `bson:"sku" json:"sku"`
-	Name string `bson:"name" json:"name"`
+	SKU         string `bson:"sku" json:"sku"`
+	Name        string `bson:"name" json:"name"`
+	Description string `bson:"description" json:"description"`
 
-	Attributes []VariantAttribute `bson:"attributes" json:"attributes"`
+	AttributeGroups []AttributeGroup `bson:"attributegroups" json:"attributegroups"`
 
 	Image string `bson:"image,omitempty" json:"image,omitempty"`
 
-	Price         float64 `bson:"price" json:"price"`
-	StockQuantity int     `bson:"stock_quantity" json:"stock_quantity"`
+	StockQuantity int `bson:"stock_quantity" json:"stock_quantity"`
 
 	IsActive  bool `bson:"is_active" json:"is_active"`
 	IsDefault bool `bson:"is_default" json:"is_default"`
@@ -63,18 +63,11 @@ type ProductVariant struct {
 	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`
 }
 
-type VariantAttribute struct {
+type AttributeGroup struct {
+	Attributes []Attribute `bson:"attributes" json:"attributes"`
+	Price      float64     `bson:"price" json:"price"`
+}
+type Attribute struct {
 	Name  string `bson:"name" json:"name"`
 	Value string `bson:"value" json:"value"`
-}
-
-type VariantOption struct {
-	ID           primitive.ObjectID `bson:"_id" json:"id"`
-	VariantID    primitive.ObjectID `bson:"variant_id" json:"variant_id"`
-	MedicineName string             `bson:"medicine_name" json:"medicine_name"`
-	Dosage       string             `bson:"dosage" json:"dosage"`
-	Instructions string             `bson:"instructions" json:"instructions"`
-
-	CreatedAt time.Time `bson:"created_at" json:"created_at"`
-	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`
 }
