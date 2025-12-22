@@ -20,24 +20,30 @@ import (
 
 type Repos struct {
 	repo.UserRepo
+	repo.EmailVerificationRepo
+	repo.PasswordResetRepo
 }
 
 type Services struct {
 	service.AdminAuthService
+	service.AuthService
 }
 type Controllers struct {
 	controller.AdminAuthController
+	controller.AuthController
 }
 
 func initRepos(client *mongo.Client, db *mongo.Database) *Repos {
 	return &Repos{
-		UserRepo: repo.NewUserRepo(db),
+		UserRepo:              repo.NewUserRepo(db),
+		EmailVerificationRepo: repo.NewEmailVerificationRepo(db),
+		PasswordResetRepo:     repo.NewPasswordResetRepo(db),
 	}
 }
 
 func initServices(repos *Repos, redisClient *redis.Client, emailSender email.Sender, eventBus bus.EventBus, tokenService *auth.TokenService) *Services {
 	services := &Services{
-		//AuthService:         service.NewAuthService(repos.UserRepo, repos.EmailVerificationRepo, repos.PasswordResetRepo, emailSender, redisClient, tokenService),
+		AuthService: service.NewAuthService(repos.UserRepo, repos.EmailVerificationRepo, repos.PasswordResetRepo, emailSender, redisClient, tokenService),
 		//UserService:         service.NewUserService(repos.UserRepo, eventBus, redisClient),
 		//MembershipService:   service.NewMembershipService(repos.MembershipRepo, redisClient),
 		//ReputationService:   service.NewReputationService(repos.UserRepo, eventBus),
@@ -80,7 +86,7 @@ func initServices(repos *Repos, redisClient *redis.Client, emailSender email.Sen
 
 func initControllers(services *Services, wsHub *ws.Hub, db *mongo.Database) *Controllers {
 	return &Controllers{
-		//AuthController:           *controller.NewAuthController(services.AuthService),
+		AuthController: *controller.NewAuthController(services.AuthService),
 		//UserController:           *controller.NewUserController(services.UserService),
 		//CommunityController:      *controller.NewCommunityController(services.CommunityService),
 		//MembershipController:     *controller.NewMembershipController(services.MembershipService),
@@ -115,7 +121,7 @@ func initRoutes(controllers *Controllers, r *gin.Engine) {
 		c.JSON(200, gin.H{"message": "Welcome to LKForum API!"})
 	})
 
-	//route.RegisterAuthRoutes(api, &controllers.AuthController, &controllers.UserController)
+	route.RegisterAuthRoutes(api, &controllers.AuthController)
 	//route.RegisterUserRoutes(api, &controllers.UserController)
 	//route.RegisterCommunityRoutes(api, &controllers.CommunityController)
 	//route.RegisterMembershipRoutes(api, &controllers.MembershipController)

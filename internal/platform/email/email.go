@@ -47,7 +47,7 @@ func NewSMTPSender() Sender {
 // SendVerificationEmail sends an email with the OTP code.
 func (s *SMTPSender) SendVerificationEmail(to, otp string) error {
 	// Constructing the email headers and body
-	subject := "Subject: Your Verification Code for LKForum\r\n"
+	subject := "Subject: Your Verification Code for Shopping Management\r\n"
 	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 
 	data := struct {
@@ -88,7 +88,7 @@ func (s *SMTPSender) SendVerificationEmail(to, otp string) error {
 
 // SendPasswordResetEmail sends an email with the OTP code for password reset.
 func (s *SMTPSender) SendPasswordResetEmail(to, otp string) error {
-	subject := "Subject: Password Reset Code for LKForum\r\n"
+	subject := "Subject: Password Reset Code for Shopping Management\r\n"
 	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 
 	data := struct {
