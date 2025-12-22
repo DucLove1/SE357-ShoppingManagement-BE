@@ -3,6 +3,15 @@ module github.com/DucLove1/SE357-ShoppingManagement-BE
 go 1.25.1
 
 require (
+	github.com/cloudinary/cloudinary-go/v2 v2.14.0
+	github.com/gin-gonic/gin v1.11.0
+	github.com/golang-jwt/jwt/v5 v5.3.0
+	github.com/google/uuid v1.6.0
+	github.com/gorilla/websocket v1.5.3
+	github.com/joho/godotenv v1.5.1
+	github.com/redis/go-redis/v9 v9.17.2
+	go.mongodb.org/mongo-driver v1.17.6
+	golang.org/x/crypto v0.40.0
 	golang.org/x/oauth2 v0.34.0
 )
 
@@ -22,7 +31,7 @@ require (
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/goccy/go-yaml v1.18.0 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
-	github.com/joho/godotenv v1.5.1 // indirect
+	github.com/gorilla/schema v1.4.1 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.16.7 // indirect
 	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
