@@ -3,10 +3,11 @@ package model
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
 type Address struct {
-	ID         primitive.ObjectID `bson:"_id,omitempty"`
-	ProvinceID primitive.ObjectID `bson:"province_id,omitempty"`
-	WardID     primitive.ObjectID `bson:"ward_id,omitempty"`
-	Detail     string             `bson:"detail" json:"detail"`
+	ID          primitive.ObjectID `bson:"_id,omitempty"`
+	ProvinceID  primitive.ObjectID `bson:"province_id,omitempty"`
+	WardID      primitive.ObjectID `bson:"ward_id,omitempty"`
+	Detail      string             `bson:"detail" json:"detail"`
+	PhoneNumber string             `bson:"phone_number" json:"phone_number"`
 }
 
 type Province struct {

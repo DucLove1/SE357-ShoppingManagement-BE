@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/DucLove1/SE357-ShoppingManagement-BE/internal/model"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // --- Request DTOs ---
@@ -13,26 +14,44 @@ import (
 
 // GetUsersQuery contains query parameters for searching and paginating users
 type GetUsersQuery struct {
-	Username string `form:"username"`
-	Page     int    `form:"page"`
-	PageSize int    `form:"pageSize"`
+	Page     int `form:"page"`
+	PageSize int `form:"pageSize"`
 }
 
-// UserProfileUpdateRequest defines the fields a user can update for their own profile.
-type UserProfileUpdateRequest struct {
-	Bio         *string           `json:"bio" binding:"omitempty,max=500"`
-	Gender      *string           `json:"gender" binding:"omitempty"`
-	DateOfBirth *string           `json:"date_of_birth"` // ISO 8601 format: "2000-01-15"
-	Location    *string           `json:"location"`
-	Interests   []string          `json:"interests" binding:"omitempty,max=10,dive"`
-	SocialLinks *SocialLinksInput `json:"social_links"`
+type BuyerProfileUpdateRequest struct {
+	FullName         *string             `json:"full_name"`
+	AvatarURL        *string             `json:"avatar_url"`
+	PublicID         *string             `json:"public_id"`
+	PhoneNumber      *string             `json:"phone_number,omitempty"`
+	Gender           *model.Gender       `json:"gender,omitempty"`
+	DateOfBirth      *time.Time          `json:"date_of_birth,omitempty"`
+	Address          []model.Address     `json:"address,omitempty"`
+	DefaultAddressID *primitive.ObjectID `json:"default_address_id,omitempty"`
 }
+type SellerProfileUpdateRequest struct {
+	AvatarURL      *string `json:"avatar_url"`
+	AvatarPublicID *string `json:"avatar_public_id"`
 
-type SocialLinksInput struct {
-	Website  *string `json:"website" binding:"omitempty,url"`
-	Facebook *string `json:"facebook"`
-	YouTube  *string `json:"youtube"`
-	GitHub   *string `json:"github"`
+	BannerURL      *string `json:"banner_url"`
+	BannerPublicID *string `json:"banner_public_id"`
+
+	FullName      *string          `json:"full_name"`
+	Categories    []model.Category `json:"categories"`
+	PickupAddress *model.Address   `json:"pickup_address"`
+	PhoneNumber   *string          `json:"phone_number"`
+	IdentityCard  *string          `json:"identity_card"`
+
+	IdentityCardURL      *string `json:"identity_card_url"`
+	IdentityCardPublicID *string `json:"identity_card_public_id"`
+
+	IDFrontImageURL      *string `json:"id_front_image_url"`
+	IDFrontImagePublicID *string `json:"id_front_image_public_id"`
+
+	IDBackImageURL      *string `json:"id_back_image_url"`
+	IDBackImagePublicID *string `json:"id_back_image_public_id"`
+
+	SelfieWithIDURL      *string `json:"selfie_with_id_url"`
+	SelfieWithIDPublicID *string `json:"selfie_with_id_public_id"`
 }
 
 type ChangePasswordRequest struct {
@@ -42,36 +61,14 @@ type ChangePasswordRequest struct {
 
 // --- Response DTOs ---
 
-// UserProfileResponse contains public profile information.
-type UserProfileResponse struct {
-	//Avatar      *model.Image           `json:"avatar,omitempty"`
-	//Cover       *model.Image           `json:"cover,omitempty"`
-	//Bio         *string                `json:"bio,omitempty"`
-	//Gender      *string                `json:"gender,omitempty"`
-	//DateOfBirth *time.Time             `json:"date_of_birth,omitempty"`
-	//Age         *int                   `json:"age,omitempty"`
-	//Location    *string                `json:"location,omitempty"`
-	//Interests   []string               `json:"interests,omitempty"`
-	//SocialLinks *model.SocialLinks     `json:"social_links,omitempty"`
-	//Stats       *ActivityStatsResponse `json:"stats,omitempty"`
-}
-
-type ActivityStatsResponse struct {
-	PostCount    int    `json:"post_count"`
-	CommentCount int    `json:"comment_count"`
-	TotalUpvotes int    `json:"total_upvotes"`
-	MemberSince  string `json:"member_since"`
-	LastActive   string `json:"last_active"`
-}
-
 // UserResponse is the main user object returned in API responses.
 type UserResponse struct {
-	ID         string              `json:"id"`
-	Username   string              `json:"username"`
-	Email      string              `json:"email,omitempty"`
-	Role       model.Role          `json:"role"`
-	IsVerified bool                `json:"is_verified"`
-	Profile    UserProfileResponse `json:"profile"`
+	ID          string            `json:"id"`
+	FullName    string            `json:"full_name"`
+	Email       string            `json:"email,omitempty"`
+	Role        model.Role        `json:"role"`
+	IsVerified  bool              `json:"is_verified"`
+	RoleContent model.RoleContent `json:"role_content"`
 }
 
 func FromUser(u *model.User) *UserResponse {
@@ -79,60 +76,13 @@ func FromUser(u *model.User) *UserResponse {
 		return nil
 	}
 	resp := &UserResponse{
-		ID:         u.ID.Hex(),
-		Email:      u.Email,
-		Role:       u.Role,
-		IsVerified: u.IsVerified,
+		ID:          u.ID.Hex(),
+		FullName:    u.FullName,
+		Email:       u.Email,
+		Role:        u.Role,
+		IsVerified:  u.IsVerified,
+		RoleContent: u.RoleContent,
 	}
-
-	//if u.RoleContent.AsUser != nil {
-	//	profile := UserProfileResponse{
-	//		Avatar:      u.RoleContent.AsUser.Avatar,
-	//		Cover:       u.RoleContent.AsUser.Cover,
-	//		Bio:         u.RoleContent.AsUser.Bio,
-	//		SocialLinks: u.RoleContent.AsUser.SocialLinks,
-	//	}
-	//
-	//	// Convert Gender to string
-	//	if u.RoleContent.AsUser.Gender != nil {
-	//		genderStr := string(*u.RoleContent.AsUser.Gender)
-	//		profile.Gender = &genderStr
-	//	}
-	//
-	//	// Calculate Age from DateOfBirth
-	//	if u.RoleContent.AsUser.DateOfBirth != nil {
-	//		age := calculateAge(*u.RoleContent.AsUser.DateOfBirth)
-	//		profile.Age = &age
-	//	}
-	//
-	//	// Convert Location to string
-	//	if u.RoleContent.AsUser.Location != nil {
-	//		locationStr := string(*u.RoleContent.AsUser.Location)
-	//		profile.Location = &locationStr
-	//	}
-	//
-	//	// Convert Interests to []string
-	//	if len(u.RoleContent.AsUser.Interests) > 0 {
-	//		interests := make([]string, len(u.RoleContent.AsUser.Interests))
-	//		for i, interest := range u.RoleContent.AsUser.Interests {
-	//			interests[i] = string(interest)
-	//		}
-	//		profile.Interests = interests
-	//	}
-	//
-	//	// Map ActivityStats
-	//	if u.RoleContent.AsUser.Stats != nil {
-	//		profile.Stats = &ActivityStatsResponse{
-	//			PostCount:    u.RoleContent.AsUser.Stats.PostCount,
-	//			CommentCount: u.RoleContent.AsUser.Stats.CommentCount,
-	//			TotalUpvotes: u.RoleContent.AsUser.Stats.TotalUpvotes,
-	//			MemberSince:  formatMemberSince(u.RoleContent.AsUser.Stats.JoinedAt),
-	//			LastActive:   formatLastActive(u.RoleContent.AsUser.Stats.LastActiveAt),
-	//		}
-	//	}
-	//
-	//	resp.Profile = profile
-	//}
 
 	return resp
 }
@@ -145,23 +95,6 @@ func FromUsers(users []*model.User) []*UserResponse {
 		responses[i] = userResponse
 	}
 	return responses
-}
-
-func calculateTitle(reputation int) string {
-	switch {
-	case reputation >= 10000:
-		return "Huyền thoại"
-	case reputation >= 2000:
-		return "Lão làng"
-	case reputation >= 500:
-		return "Cây bút trẻ"
-	case reputation >= 100:
-		return "Thành viên tích cực"
-	case reputation >= 0:
-		return "Lính mới"
-	default:
-		return "Người qua đường"
-	}
 }
 
 func calculateAge(birthDate time.Time) int {
