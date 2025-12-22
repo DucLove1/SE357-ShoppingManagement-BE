@@ -1,13 +1,15 @@
 package auth
 
 import (
-	"SE357-ShoppingManagement-BE/internal/apperror"
-	"SE357-ShoppingManagement-BE/internal/config"
+	"context"
 	"fmt"
+	"github.com/DucLove1/SE357-ShoppingManagement-BE/internal/apperror"
+	"github.com/DucLove1/SE357-ShoppingManagement-BE/internal/config"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
 // AuthUser represents the authenticated user with their settings cached.

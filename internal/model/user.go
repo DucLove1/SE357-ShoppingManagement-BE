@@ -15,8 +15,13 @@ type User struct {
 	UserStatus  UserStatus         `bson:"user_status,omitempty" json:"user_status,omitempty"`
 	IsVerified  bool               `bson:"is_verified" json:"is_verified"`
 	LastLoginAt *time.Time         `bson:"last_login_at,omitempty" json:"last_login_at,omitempty"`
-	CreateAt    time.Time          `bson:"create_at" json:"create_at"`
-	UpdateAt    time.Time          `bson:"update_at" json:"update_at"`
+	CreatedAt   time.Time          `bson:"created_at" json:"created_at"`
+	UpdatedAt   time.Time          `bson:"updated_at" json:"updated_at"`
+	DeletedAt   *time.Time         `bson:"deleted_at,omitempty" json:"deleted_at,omitempty"`
+	// Ban fields
+	IsBanned  bool       `bson:"is_banned" json:"is_banned"`
+	BanUntil  *time.Time `bson:"ban_until,omitempty" json:"ban_until,omitempty"` // null = permanent ban
+	BanReason *string    `bson:"ban_reason,omitempty" json:"ban_reason,omitempty"`
 }
 
 type UserStatus string

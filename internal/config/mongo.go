@@ -12,22 +12,8 @@ import (
 )
 
 var (
-	Client   *mongo.Client
-	Database *mongo.Database
-)
-
-const (
-	UserColName            = "users"
-	PostColName            = "posts"
-	CommunityColName       = "communities"
-	CommentColName         = "comments"
-	VoteColName            = "votes"
-	NotificationColName    = "notifications"
-	ReportColName          = "reports"
-	MembershipColName      = "memberships"
-	LikedPostColName       = "liked_posts"
-	SavedPostColName       = "saved_posts"
-	UserPostHistoryColName = "user_post_history"
+	Client *mongo.Client
+	db     *mongo.Database
 )
 
 // NewMongoClient creates and returns a new MongoDB client
@@ -37,7 +23,7 @@ func NewMongoClient() *mongo.Client {
 		log.Fatal("MONGO_URI environment variable is not set")
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
@@ -51,17 +37,17 @@ func NewMongoClient() *mongo.Client {
 	}
 
 	log.Println("Connected to MongoDB successfully!")
-	Client = client
 
 	dbName := os.Getenv("DB_NAME")
 	if dbName == "" {
 		log.Fatal("DB_NAME environment variable is not set")
 	}
 
-	Database = client.Database(dbName)
+	Client = client
+	db = client.Database(dbName)
 
 	// Verify required collections exist
-	if err := verifyCollections(ctx, Database); err != nil {
+	if err := verifyCollections(ctx, db); err != nil {
 		log.Fatalf("Collection verification failed: %v", err)
 	}
 
@@ -79,14 +65,19 @@ func verifyCollections(ctx context.Context, db *mongo.Database) error {
 		UserColName,
 		PostColName,
 		CommunityColName,
+		CommunityBanColName,
 		CommentColName,
+		ChannelColName,
+		MessageColName,
 		VoteColName,
+		PollVoteColName,
 		NotificationColName,
 		ReportColName,
 		MembershipColName,
 		LikedPostColName,
 		SavedPostColName,
 		UserPostHistoryColName,
+		EmailVerificationColName,
 	}
 
 	existing := make(map[string]bool, len(collections))
