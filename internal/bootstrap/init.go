@@ -29,12 +29,14 @@ type Services struct {
 	service.AuthService
 	service.UserService
 	service.AdminUserService
+	service.MediaService
 }
 type Controllers struct {
 	controller.AdminAuthController
 	controller.AuthController
 	controller.UserController
 	controller.AdminUserController
+	controller.MediaController
 }
 
 func initRepos(client *mongo.Client, db *mongo.Database) *Repos {
@@ -47,8 +49,9 @@ func initRepos(client *mongo.Client, db *mongo.Database) *Repos {
 
 func initServices(repos *Repos, redisClient *redis.Client, emailSender email.Sender, eventBus bus.EventBus, tokenService *auth.TokenService) *Services {
 	services := &Services{
-		AuthService: service.NewAuthService(repos.UserRepo, repos.EmailVerificationRepo, repos.PasswordResetRepo, emailSender, redisClient, tokenService),
-		UserService: service.NewUserService(repos.UserRepo, eventBus, redisClient),
+		AuthService:  service.NewAuthService(repos.UserRepo, repos.EmailVerificationRepo, repos.PasswordResetRepo, emailSender, redisClient, tokenService),
+		UserService:  service.NewUserService(repos.UserRepo, eventBus, redisClient),
+		MediaService: service.NewMediaService(),
 		//MembershipService:   service.NewMembershipService(repos.MembershipRepo, redisClient),
 		//ReputationService:   service.NewReputationService(repos.UserRepo, eventBus),
 		//NotificationService: service.NewNotificationService(repos.NotificationRepo, repos.UserRepo, repos.PostRepo, repos.CommentRepo, repos.CommunityRepo, eventBus, redisClient),
@@ -90,8 +93,9 @@ func initServices(repos *Repos, redisClient *redis.Client, emailSender email.Sen
 
 func initControllers(services *Services, wsHub *ws.Hub, db *mongo.Database) *Controllers {
 	return &Controllers{
-		AuthController: *controller.NewAuthController(services.AuthService),
-		UserController: *controller.NewUserController(services.UserService),
+		AuthController:  *controller.NewAuthController(services.AuthService),
+		UserController:  *controller.NewUserController(services.UserService),
+		MediaController: *controller.NewMediaController(services.MediaService),
 		//CommunityController:      *controller.NewCommunityController(services.CommunityService),
 		//MembershipController:     *controller.NewMembershipController(services.MembershipService),
 		//PostController:           *controller.NewPostController(services.PostService),
@@ -127,6 +131,7 @@ func initRoutes(controllers *Controllers, r *gin.Engine) {
 
 	route.RegisterAuthRoutes(api, &controllers.AuthController)
 	route.RegisterUserRoutes(api, &controllers.UserController)
+	route.RegisterMediaRoutes(api, &controllers.MediaController)
 	//route.RegisterCommunityRoutes(api, &controllers.CommunityController)
 	//route.RegisterMembershipRoutes(api, &controllers.MembershipController)
 	//route.RegisterPostRoutes(api, &controllers.PostController)
