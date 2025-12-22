@@ -15,6 +15,7 @@ import (
 	"github.com/DucLove1/SE357-ShoppingManagement-BE/internal/util"
 	"github.com/redis/go-redis/v9"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -29,7 +30,8 @@ type UserService interface {
 
 	GetUserByID(id string) (*dto.UserResponse, error)
 	GetUserByEmail(email string) (*dto.UserResponse, error)
-	GetUsers(query *dto.GetUsersQuery) (*dto.PaginatedUsersResponse, error)
+	GetBuyers(query *dto.GetBuyersQuery) (*dto.PaginatedUsersResponse, error)
+	GetSellers(query *dto.GetSellersQuery) (*dto.PaginatedUsersResponse, error)
 }
 
 type userService struct {
@@ -304,33 +306,53 @@ func (s *userService) GetUserByEmail(email string) (*dto.UserResponse, error) {
 	return dto.FromUser(user), nil
 }
 
-func (s *userService) GetUsers(query *dto.GetUsersQuery) (*dto.PaginatedUsersResponse, error) {
+func (s *userService) GetBuyers(query *dto.GetBuyersQuery) (*dto.PaginatedUsersResponse, error) {
 	ctx, cancel := util.NewDefaultDBContext()
 	defer cancel()
 
-	// Build filter - exclude deleted and banned users for regular users
+	// Base filter
 	filter := repo.Filter{
 		"deleted_at": bson.M{"$exists": false},
-		"is_banned":  false, // Only show non-banned users
+		"is_banned":  false,
+		"role":       model.BuyerRole,
 	}
 
-	// Pagination
-	page := query.Page
-	if page < 1 {
-		page = 1
+	// ============ SEARCH FILTERS ============
+
+	// Keyword search (fullname OR email)
+	if query.Keyword != "" {
+		filter["$or"] = []bson.M{
+			{"full_name": bson.M{"$regex": primitive.Regex{Pattern: query.Keyword, Options: "i"}}},
+			{"email": bson.M{"$regex": primitive.Regex{Pattern: query.Keyword, Options: "i"}}},
+		}
 	}
-	pageSize := query.PageSize
-	if pageSize < 1 {
-		pageSize = 10
+
+	// Specific field search
+	if query.Email != "" {
+		filter["email"] = bson.M{"$regex": primitive.Regex{Pattern: query.Email, Options: "i"}}
 	}
-	if pageSize > 100 {
-		pageSize = 100
+
+	if query.FullName != "" {
+		filter["full_name"] = bson.M{"$regex": primitive.Regex{Pattern: query.FullName, Options: "i"}}
 	}
+
+	if query.PhoneNumber != "" {
+		filter["role_content.buyer.phone_number"] = bson.M{"$regex": primitive.Regex{Pattern: query.PhoneNumber, Options: "i"}}
+	}
+
+	// ============ FILTER BY FIELDS ============
+
+	// Gender
+	if query.Gender != "" {
+		filter["role_content.buyer.gender"] = query.Gender
+	}
+
+	// ============ PAGINATION ============
+	page, pageSize := s.normalizePagination(query.Page, query.PageSize)
 
 	findOptions := &repo.FindOptions{
 		Skip:  int64((page - 1) * pageSize),
 		Limit: int64(pageSize),
-		Sort:  map[string]int{"created_at": -1},
 	}
 
 	users, total, err := s.userRepo.Find(ctx, filter, findOptions)
@@ -338,14 +360,94 @@ func (s *userService) GetUsers(query *dto.GetUsersQuery) (*dto.PaginatedUsersRes
 		return nil, err
 	}
 
-	userResponses := dto.FromUsers(users)
-
 	return &dto.PaginatedUsersResponse{
-		Users: userResponses,
+		Users: dto.FromUsers(users),
 		Pagination: dto.Pagination{
 			Page:     page,
 			PageSize: pageSize,
 			Total:    total,
 		},
 	}, nil
+}
+
+// ============ GET SELLERS ============
+func (s *userService) GetSellers(query *dto.GetSellersQuery) (*dto.PaginatedUsersResponse, error) {
+	ctx, cancel := util.NewDefaultDBContext()
+	defer cancel()
+
+	// Base filter
+	filter := repo.Filter{
+		"deleted_at": bson.M{"$exists": false},
+		"is_banned":  false,
+		"role":       model.SellerRole,
+	}
+
+	// ============ SEARCH FILTERS ============
+
+	// Keyword search (fullname OR email)
+	if query.Keyword != "" {
+		filter["$or"] = []bson.M{
+			{"full_name": bson.M{"$regex": primitive.Regex{Pattern: query.Keyword, Options: "i"}}},
+			{"email": bson.M{"$regex": primitive.Regex{Pattern: query.Keyword, Options: "i"}}},
+		}
+	}
+
+	// Specific field search
+	if query.Email != "" {
+		filter["email"] = bson.M{"$regex": primitive.Regex{Pattern: query.Email, Options: "i"}}
+	}
+
+	if query.FullName != "" {
+		filter["full_name"] = bson.M{"$regex": primitive.Regex{Pattern: query.FullName, Options: "i"}}
+	}
+
+	if query.PhoneNumber != "" {
+		filter["role_content.seller.phone_number"] = bson.M{"$regex": primitive.Regex{Pattern: query.PhoneNumber, Options: "i"}}
+	}
+
+	// ============ FILTER BY FIELDS ============
+
+	// Seller Status
+	if query.SellerStatus != "" {
+		filter["role_content.seller.seller_status"] = query.SellerStatus
+	}
+
+	// Category
+	if query.CategoryID != nil {
+		filter["role_content.seller.categories._id"] = *query.CategoryID
+	}
+
+	// ============ PAGINATION ============
+	page, pageSize := s.normalizePagination(query.Page, query.PageSize)
+
+	findOptions := &repo.FindOptions{
+		Skip:  int64((page - 1) * pageSize),
+		Limit: int64(pageSize),
+	}
+
+	users, total, err := s.userRepo.Find(ctx, filter, findOptions)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.PaginatedUsersResponse{
+		Users: dto.FromUsers(users),
+		Pagination: dto.Pagination{
+			Page:     page,
+			PageSize: pageSize,
+			Total:    total,
+		},
+	}, nil
+}
+func (s *userService) normalizePagination(page, pageSize int) (int, int) {
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 {
+		pageSize = 10
+	}
+	if pageSize > 100 {
+		pageSize = 100
+	}
+	return page, pageSize
 }

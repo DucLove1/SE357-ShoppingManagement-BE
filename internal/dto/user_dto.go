@@ -17,7 +17,38 @@ type GetUsersQuery struct {
 	Page     int `form:"page"`
 	PageSize int `form:"pageSize"`
 }
+type GetBuyersQuery struct {
+	// Pagination
+	Page     int `form:"page"`
+	PageSize int `form:"pageSize"`
 
+	// Search
+	Keyword     string `form:"keyword"` // Tìm theo fullname hoặc email
+	Email       string `form:"email"`
+	FullName    string `form:"full_name"`
+	PhoneNumber string `form:"phone_number"`
+
+	// Filter
+	Gender string `form:"gender"` // male, female, other
+
+}
+
+type GetSellersQuery struct {
+	// Pagination
+	Page     int `form:"page"`
+	PageSize int `form:"pageSize"`
+
+	// Search
+	Keyword     string `form:"keyword"` // Tìm theo fullname, email hoặc shop name
+	Email       string `form:"email"`
+	FullName    string `form:"full_name"`
+	PhoneNumber string `form:"phone_number"`
+
+	// Filter
+	SellerStatus string              `form:"seller_status"` // pending, active, rejected
+	CategoryID   *primitive.ObjectID `form:"category_id"`   // Filter theo danh mục bán
+
+}
 type BuyerProfileUpdateRequest struct {
 	FullName         *string             `json:"full_name"`
 	AvatarURL        *string             `json:"avatar_url"`
