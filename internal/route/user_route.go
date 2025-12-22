@@ -9,14 +9,6 @@ import (
 func RegisterUserRoutes(rg *gin.RouterGroup, c *controller.UserController) {
 	users := rg.Group("/users")
 
-	users.Use(middleware.RequireAuth(), middleware.RequireAdmin())
-	{
-		users.GET("buyers", c.GetBuyers)
-		users.GET("buyers/", c.GetBuyers)
-		users.GET("sellers", c.GetSellers)
-		users.GET("sellers/", c.GetSellers)
-	}
-	
 	// Routes for the currently authenticated user ("me")
 	me := users.Group("/me")
 	me.Use(middleware.RequireAuth())

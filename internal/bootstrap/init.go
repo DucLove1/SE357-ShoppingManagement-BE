@@ -28,11 +28,13 @@ type Services struct {
 	service.AdminAuthService
 	service.AuthService
 	service.UserService
+	service.AdminUserService
 }
 type Controllers struct {
 	controller.AdminAuthController
 	controller.AuthController
 	controller.UserController
+	controller.AdminUserController
 }
 
 func initRepos(client *mongo.Client, db *mongo.Database) *Repos {
@@ -78,7 +80,7 @@ func initServices(repos *Repos, redisClient *redis.Client, emailSender email.Sen
 	//services.ModerationService = service.NewModerationService(repos.PostRepo, repos.CommentRepo, repos.UserRepo, repos.CommunityRepo, geminiClient, eventBus, &config.Cfg.Gemini)
 	//
 	//// AdminUserService for admin operations
-	//services.AdminUserService = service.NewAdminUserService(repos.UserRepo)
+	services.AdminUserService = service.NewAdminUserService(repos.UserRepo)
 	//services.AdminCommunityService = service.NewAdminCommunityService(repos.CommunityRepo)
 	//services.AdminStatsService = service.NewAdminStatsService(repos.UserRepo, repos.CommunityRepo, repos.PostRepo, repos.CommentRepo, repos.ReportRepo)
 	services.AdminAuthService = service.NewAdminAuthService(repos.UserRepo, redisClient, tokenService)
@@ -102,7 +104,7 @@ func initControllers(services *Services, wsHub *ws.Hub, db *mongo.Database) *Con
 		//PostHistoryController:    *controller.NewPostHistoryController(services.PostHistoryService),
 		//DraftController:          *controller.NewDraftController(services.DraftService),
 		//ReportController:         *controller.NewReportController(services.ReportService),
-		//AdminUserController:      *controller.NewAdminUserController(services.AdminUserService),
+		AdminUserController: *controller.NewAdminUserController(services.AdminUserService),
 		//AdminCommunityController: *controller.NewAdminCommunityController(services.AdminCommunityService),
 		//AdminStatsController:     *controller.NewAdminStatsController(services.AdminStatsService),
 		AdminAuthController: *controller.NewAdminAuthController(services.AdminAuthService),
@@ -138,7 +140,7 @@ func initRoutes(controllers *Controllers, r *gin.Engine) {
 	//route.RegisterDraftRoutes(api, &controllers.DraftController)
 	//route.RegisterReportRoutes(api, &controllers.ReportController)
 	route.RegisterAdminAuthRoutes(api, &controllers.AdminAuthController)
-	//route.RegisterAdminUserRoutes(api, &controllers.AdminUserController)
+	route.RegisterAdminUserRoutes(api, &controllers.AdminUserController)
 	//route.RegisterAdminCommunityRoutes(api, &controllers.CommunityController, &controllers.AdminCommunityController)
 	//route.RegisterAdminReportRoutes(api, &controllers.ReportController)
 	//route.RegisterAdminStatsRoutes(api, &controllers.AdminStatsController)
