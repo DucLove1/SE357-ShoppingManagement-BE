@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/DucLove1/SE357-ShoppingManagement-BE/internal/apperror"
@@ -17,8 +18,9 @@ type UserRepo interface {
 	Create(ctx context.Context, user *model.User) (*model.User, error)
 	Update(ctx context.Context, user *model.User) (*model.User, error)
 	Delete(ctx context.Context, id string) error
-
+	SoftDelete(ctx context.Context, userID string) error
 	GetByID(ctx context.Context, id string) (*model.User, error)
+	GetDeletedByID(ctx context.Context, id string) (*model.User, error)
 	GetByIDs(ctx context.Context, ids []string) ([]*model.User, error)
 	GetByUsername(ctx context.Context, username string) (*model.User, error)
 	GetByEmail(ctx context.Context, email string) (*model.User, error)
@@ -92,6 +94,33 @@ func (r *userRepo) Update(ctx context.Context, user *model.User) (*model.User, e
 	}
 	return user, nil
 }
+func (r *userRepo) SoftDelete(ctx context.Context, userID string) error {
+	fmt.Println("=== SoftDelete Repository ===")
+	objID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return err
+	}
+
+	filter := bson.M{"_id": objID}
+	update := bson.M{
+		"$set": bson.M{
+			"deleted_at": time.Now(),
+			"updated_at": time.Now(),
+		},
+	}
+
+	result, err := r.userCollection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		fmt.Println("UpdateOne error:", err)
+		return err
+	}
+	fmt.Printf("MatchedCount: %d, ModifiedCount: %d\n",
+		result.MatchedCount, result.ModifiedCount)
+	if result.MatchedCount == 0 {
+		return mongo.ErrNoDocuments
+	}
+	return nil
+}
 
 func (r *userRepo) Delete(ctx context.Context, id string) error {
 	objectID, err := primitive.ObjectIDFromHex(id)
@@ -116,6 +145,20 @@ func (r *userRepo) GetByID(ctx context.Context, id string) (*model.User, error) 
 		return nil, apperror.ErrInvalidID
 	}
 	filter := bson.M{"_id": objectID, "deleted_at": bson.M{"$exists": false}}
+	var user model.User
+	err = r.userCollection.FindOne(ctx, filter).Decode(&user)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (r *userRepo) GetDeletedByID(ctx context.Context, id string) (*model.User, error) {
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, apperror.ErrInvalidID
+	}
+	filter := bson.M{"_id": objectID, "deleted_at": bson.M{"$exists": true}}
 	var user model.User
 	err = r.userCollection.FindOne(ctx, filter).Decode(&user)
 	if err != nil {

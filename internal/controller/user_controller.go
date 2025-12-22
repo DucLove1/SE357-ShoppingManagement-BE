@@ -21,37 +21,6 @@ func NewUserController(service service.UserService) *UserController {
 	return &UserController{service: service}
 }
 
-// GetUsers retrieves a paginated list of users with optional username search.
-func (c *UserController) GetBuyers(ctx *gin.Context) {
-	var query dto.GetBuyersQuery
-	if err := ctx.ShouldBindQuery(&query); err != nil {
-		dto.SendError(ctx, http.StatusBadRequest, "Invalid query parameters", apperror.ErrBadRequest.Code)
-		return
-	}
-
-	response, err := c.service.GetBuyers(&query)
-	if err != nil {
-		dto.SendError(ctx, apperror.StatusFromError(err), apperror.Message(err), apperror.Code(err))
-		return
-	}
-	dto.SendSuccess(ctx, http.StatusOK, "Users retrieved successfully", response)
-}
-
-func (c *UserController) GetSellers(ctx *gin.Context) {
-	var query dto.GetSellersQuery
-	if err := ctx.ShouldBindQuery(&query); err != nil {
-		dto.SendError(ctx, http.StatusBadRequest, "Invalid query parameters", apperror.ErrBadRequest.Code)
-		return
-	}
-
-	response, err := c.service.GetSellers(&query)
-	if err != nil {
-		dto.SendError(ctx, apperror.StatusFromError(err), apperror.Message(err), apperror.Code(err))
-		return
-	}
-	dto.SendSuccess(ctx, http.StatusOK, "Users retrieved successfully", response)
-}
-
 // GetMyProfile retrieves the profile of the currently authenticated user.
 func (c *UserController) GetMyProfile(ctx *gin.Context) {
 	authUser, exists := ctx.Get("authUser")
