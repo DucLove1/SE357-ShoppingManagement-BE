@@ -7,6 +7,7 @@ import (
 	"github.com/DucLove1/SE357-ShoppingManagement-BE/internal/apperror"
 	"github.com/DucLove1/SE357-ShoppingManagement-BE/internal/auth"
 	"github.com/DucLove1/SE357-ShoppingManagement-BE/internal/dto"
+	"github.com/DucLove1/SE357-ShoppingManagement-BE/internal/model"
 	"github.com/DucLove1/SE357-ShoppingManagement-BE/internal/repo"
 	"github.com/gin-gonic/gin"
 )
@@ -149,6 +150,32 @@ func RequireAdmin() gin.HandlerFunc {
 
 		if user.Role != "admin" {
 			dto.SendError(c, http.StatusForbidden, apperror.ErrAdminAccessRequired.Message, apperror.ErrAdminAccessRequired.Code)
+			c.Abort()
+			return
+		}
+
+		c.Next()
+	}
+}
+
+func RequireSeller() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		val, exists := c.Get("authUser")
+		if !exists {
+			dto.SendError(c, http.StatusUnauthorized, apperror.ErrNotAuthenticated.Message, apperror.ErrNotAuthenticated.Code)
+			c.Abort()
+			return
+		}
+
+		user, ok := val.(auth.AuthUser)
+		if !ok {
+			dto.SendError(c, http.StatusInternalServerError, apperror.ErrInvalidAuthContext.Message, apperror.ErrInvalidAuthContext.Code)
+			c.Abort()
+			return
+		}
+
+		if user.Role != string(model.SellerRole) {
+			dto.SendError(c, http.StatusForbidden, apperror.ErrSellerAccessRequired.Message, apperror.ErrSellerAccessRequired.Code)
 			c.Abort()
 			return
 		}

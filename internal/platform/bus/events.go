@@ -348,3 +348,53 @@ func (e ModeratorAddedEvent) Topic() string { return TopicModeratorAdded }
 func (e ModeratorAddedEvent) Payload() map[string]interface{} {
 	return map[string]interface{}{"community_id": e.CommunityID, "moderator_ids": e.ModeratorIDs}
 }
+
+// platform/bus/events.go (thêm vào file hiện có)
+
+// Product events
+type ProductCreatedEventType struct {
+	ProductID string
+	SellerID  string
+	Name      string
+}
+
+type ProductUpdatedEventType struct {
+	ProductID string
+	SellerID  string
+}
+
+type ProductDeletedEventType struct {
+	ProductID string
+	SellerID  string
+}
+
+type ProductStatusChangedEventType struct {
+	ProductID string
+	SellerID  string
+	Status    string
+}
+
+// Cart events
+type CartItemAddedEventType struct {
+	UserID    string
+	ProductID string
+	VariantID *string
+	Quantity  int
+}
+
+type CartItemUpdatedEventType struct {
+	UserID    string
+	ProductID string
+	VariantID *string
+	Quantity  int
+}
+
+type CartItemRemovedEventType struct {
+	UserID    string
+	ProductID string
+	VariantID *string
+}
+
+type CartClearedEventType struct {
+	UserID string
+}

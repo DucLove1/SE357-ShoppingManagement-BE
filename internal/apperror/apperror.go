@@ -59,10 +59,11 @@ func StatusFromError(err error) int {
 	switch {
 	// 400 Bad Request
 	case isErrorType(err, ErrBadRequest, ErrInvalidID, ErrInvalidMembershipData, ErrInvalidOTP, ErrOTPExpired,
-		ErrInvalidGender, ErrInvalidDateFormat, ErrAgeTooYoung, ErrInvalidBirthDate, ErrInvalidProvince, ErrTooManyInterests, ErrInvalidInterest):
+		ErrInvalidGender, ErrInvalidDateFormat, ErrAgeTooYoung, ErrInvalidBirthDate, ErrInvalidProvince, ErrTooManyInterests, ErrInvalidInterest, ErrInsufficientStock):
 		return http.StatusBadRequest
 	// 401 Unauthorized
-	case isErrorType(err, ErrInvalidCredentials, ErrInvalidToken, ErrInvalidClaims, ErrInvalidIssuer, ErrInvalidAudience, ErrTokenInvalidated, ErrMissingAuthHeader, ErrInvalidAuthHeader, ErrMissingToken, ErrNotAuthenticated):
+	case isErrorType(err, ErrInvalidCredentials, ErrInvalidToken, ErrInvalidClaims, ErrInvalidIssuer, ErrInvalidAudience, ErrTokenInvalidated, ErrMissingAuthHeader,
+		ErrInvalidAuthHeader, ErrMissingToken, ErrNotAuthenticated, ErrSellerAccessRequired):
 		return http.StatusUnauthorized
 	// 403 Forbidden
 	case isErrorType(err, ErrForbidden, ErrUserInactive, ErrUserNotMember, ErrEmailNotVerified, ErrAdminAccessRequired,
@@ -73,7 +74,8 @@ func StatusFromError(err error) int {
 		ErrPostNotFound, ErrVoteNotFound, ErrDraftNotFound, ErrEmailNotRegistered, ErrProvinceNotFound, ErrWardNotFound):
 		return http.StatusNotFound
 	// 409 Conflict
-	case isErrorType(err, ErrUsernameExists, ErrEmailExists, ErrCommunityNameExists, ErrAlreadyMember, ErrEmailAlreadyVerified, ErrLoginMethodMismatch, ErrPollVoted, ErrPollCannotEdit, ErrAlreadyReported):
+	case isErrorType(err, ErrUsernameExists, ErrEmailExists, ErrCommunityNameExists,
+		ErrAlreadyMember, ErrEmailAlreadyVerified, ErrLoginMethodMismatch, ErrPollVoted, ErrPollCannotEdit, ErrAlreadyReported):
 		return http.StatusConflict
 	// 500 Internal Server Error
 	case isErrorType(err, ErrInternal, ErrNoFieldsToUpdate, ErrMembershipCreateFailed, ErrMembershipDeleteFailed):
@@ -97,6 +99,7 @@ var (
 	ErrNotAuthenticated     = AppError{Code: "NOT_AUTHENTICATED", Message: "Chưa xác thực"}
 	ErrInvalidAuthContext   = AppError{Code: "INVALID_AUTH_CONTEXT", Message: "Ngữ cảnh xác thực không hợp lệ"}
 	ErrAdminAccessRequired  = AppError{Code: "ADMIN_ACCESS_REQUIRED", Message: "Cần quyền quản trị viên"}
+	ErrSellerAccessRequired = AppError{Code: "SELLER_ACCESS_REQUIRED", Message: "Cần quyền người bán"}
 	ErrForbidden            = AppError{Code: "FORBIDDEN", Message: "Bạn không có quyền thực hiện hành động này"}
 	ErrBadRequest           = AppError{Code: "BAD_REQUEST", Message: "Yêu cầu không hợp lệ"}
 	ErrEmailNotVerified     = AppError{Code: "EMAIL_NOT_VERIFIED", Message: "Email chưa được xác thực"}
@@ -152,10 +155,12 @@ var (
 	ErrAlreadyReported = AppError{Code: "ALREADY_REPORTED", Message: "Bạn đã báo cáo nội dung này rồi"}
 	ErrDraftNotFound   = AppError{Code: "DRAFT_NOT_FOUND", Message: "Không tìm thấy bản nháp"}
 
-	// Comment-related
-	ErrCommentNotFound = AppError{Code: "COMMENT_NOT_FOUND", Message: "Không tìm thấy bình luận"}
-	ErrDepthInvalid    = AppError{Code: "DEPTH_TOO_HIGH", Message: "Độ sâu phải từ 0 đến 2"}
-	ErrUserIsMuted     = AppError{Code: "USER_MUTED", Message: "Người dùng đã bị cấm bình luận"}
+	// Product-related
+	ErrProductNotFound     = AppError{Code: "PRODUCT_NOT_FOUND", Message: "Không tìm thấy sản phẩm"}
+	ErrProductNotAvailable = AppError{Code: "PRODUCT_NOT_AVAILABLE", Message: "Sản phẩm không khả dụng"}
+	ErrVariantNotFound     = AppError{Code: "VARIANT_NOT_FOUND", Message: "Không tìm thấy biến thể sản phẩm"}
+	ErrVariantRequired     = AppError{Code: "VARIANT_REQUIRED", Message: "Yêu cầu chọn biến thể cho sản phẩm này"}
+	ErrInsufficientStock   = AppError{Code: "INSUFFICIENT_STOCK", Message: "Không đủ hàng trong kho"}
 
 	// Cart-related
 	ErrCartNotFound     = AppError{Code: "CART_NOT_FOUND", Message: "Không tìm thấy giỏ hàng"}
