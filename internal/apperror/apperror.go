@@ -59,7 +59,8 @@ func StatusFromError(err error) int {
 	switch {
 	// 400 Bad Request
 	case isErrorType(err, ErrBadRequest, ErrInvalidID, ErrInvalidMembershipData, ErrInvalidOTP, ErrOTPExpired,
-		ErrInvalidGender, ErrInvalidDateFormat, ErrAgeTooYoung, ErrInvalidBirthDate, ErrInvalidProvince, ErrTooManyInterests, ErrInvalidInterest, ErrInsufficientStock):
+		ErrInvalidGender, ErrInvalidDateFormat, ErrAgeTooYoung, ErrInvalidBirthDate, ErrInvalidProvince, ErrTooManyInterests, ErrInvalidInterest, ErrInsufficientStock,
+		ErrOrderCannotBeCanceled, ErrOrderCannotBeReturned, ErrInvalidOrderStatus, ErrInvalidOrderStatusTransition, ErrInvalidPaymentMethod, ErrMultipleSellersNotAllowed):
 		return http.StatusBadRequest
 	// 401 Unauthorized
 	case isErrorType(err, ErrInvalidCredentials, ErrInvalidToken, ErrInvalidClaims, ErrInvalidIssuer, ErrInvalidAudience, ErrTokenInvalidated, ErrMissingAuthHeader,
@@ -71,7 +72,7 @@ func StatusFromError(err error) int {
 		return http.StatusForbidden
 	// 404 Not Found
 	case isErrorType(err, ErrUserNotFound, ErrCommunityNotFound, ErrCommunityDeleted, ErrMembershipNotFound, ErrProductNotFound, ErrCartNotFound, ErrCartItemNotFound,
-		ErrPostNotFound, ErrVoteNotFound, ErrDraftNotFound, ErrEmailNotRegistered, ErrProvinceNotFound, ErrWardNotFound):
+		ErrPostNotFound, ErrVoteNotFound, ErrDraftNotFound, ErrEmailNotRegistered, ErrProvinceNotFound, ErrWardNotFound, ErrOrderNotFound):
 		return http.StatusNotFound
 	// 409 Conflict
 	case isErrorType(err, ErrUsernameExists, ErrEmailExists, ErrCommunityNameExists,
@@ -169,4 +170,12 @@ var (
 	ErrProvinceNotFound = AppError{Code: "PROVINCE_NOT_FOUND", Message: "Không tìm thấy tỉnh/thành phố"}
 	ErrProvinceHasWards = AppError{Code: "PROVINCE_HAS_WARDS", Message: "Không thể xóa tỉnh/thành phố có quận/huyện"}
 	ErrWardNotFound     = AppError{Code: "WARD_NOT_FOUND", Message: "Không tìm thấy quận/huyện"}
+
+	ErrOrderNotFound                = AppError{Code: "ORDER_NOT_FOUND", Message: "Không tìm thấy đơn hàng"}
+	ErrOrderCannotBeCanceled        = AppError{Code: "ORDER_CANNOT_BE_CANCELED", Message: "Đơn hàng không thể hủy ở trạng thái hiện tại"}
+	ErrOrderCannotBeReturned        = AppError{Code: "ORDER_CANNOT_BE_RETURNED", Message: "Đơn hàng không thể trả ở trạng thái hiện tại"}
+	ErrInvalidOrderStatus           = AppError{Code: "INVALID_ORDER_STATUS", Message: "Trạng thái đơn hàng không hợp lệ"}
+	ErrInvalidOrderStatusTransition = AppError{Code: "INVALID_ORDER_STATUS_TRANSITION", Message: "Không thể chuyển sang trạng thái này"}
+	ErrInvalidPaymentMethod         = AppError{Code: "INVALID_PAYMENT_METHOD", Message: "Phương thức thanh toán không hợp lệ"}
+	ErrMultipleSellersNotAllowed    = AppError{Code: "MULTIPLE_SELLERS_NOT_ALLOWED", Message: "Một đơn hàng chỉ được mua từ một người bán"}
 )
