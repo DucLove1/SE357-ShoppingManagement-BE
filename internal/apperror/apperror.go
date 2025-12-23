@@ -65,10 +65,12 @@ func StatusFromError(err error) int {
 	case isErrorType(err, ErrInvalidCredentials, ErrInvalidToken, ErrInvalidClaims, ErrInvalidIssuer, ErrInvalidAudience, ErrTokenInvalidated, ErrMissingAuthHeader, ErrInvalidAuthHeader, ErrMissingToken, ErrNotAuthenticated):
 		return http.StatusUnauthorized
 	// 403 Forbidden
-	case isErrorType(err, ErrForbidden, ErrUserInactive, ErrUserNotMember, ErrEmailNotVerified, ErrAdminAccessRequired):
+	case isErrorType(err, ErrForbidden, ErrUserInactive, ErrUserNotMember, ErrEmailNotVerified, ErrAdminAccessRequired,
+		ErrProvinceHasWards, ErrProductNotAvailable, ErrVariantNotFound, ErrVariantRequired):
 		return http.StatusForbidden
 	// 404 Not Found
-	case isErrorType(err, ErrUserNotFound, ErrCommunityNotFound, ErrCommunityDeleted, ErrMembershipNotFound, ErrPostNotFound, ErrVoteNotFound, ErrDraftNotFound, ErrEmailNotRegistered):
+	case isErrorType(err, ErrUserNotFound, ErrCommunityNotFound, ErrCommunityDeleted, ErrMembershipNotFound, ErrProductNotFound, ErrCartNotFound, ErrCartItemNotFound,
+		ErrPostNotFound, ErrVoteNotFound, ErrDraftNotFound, ErrEmailNotRegistered, ErrProvinceNotFound, ErrWardNotFound):
 		return http.StatusNotFound
 	// 409 Conflict
 	case isErrorType(err, ErrUsernameExists, ErrEmailExists, ErrCommunityNameExists, ErrAlreadyMember, ErrEmailAlreadyVerified, ErrLoginMethodMismatch, ErrPollVoted, ErrPollCannotEdit, ErrAlreadyReported):
@@ -155,10 +157,11 @@ var (
 	ErrDepthInvalid    = AppError{Code: "DEPTH_TOO_HIGH", Message: "Độ sâu phải từ 0 đến 2"}
 	ErrUserIsMuted     = AppError{Code: "USER_MUTED", Message: "Người dùng đã bị cấm bình luận"}
 
-	// Messaging-related
-	ErrChannelNotFound = AppError{Code: "CHANNEL_NOT_FOUND", Message: "Không tìm thấy kênh"}
-	ErrNoMessageFound  = AppError{Code: "NO_MESSAGE_FOUND", Message: "Không tìm thấy tin nhắn"}
+	// Cart-related
+	ErrCartNotFound     = AppError{Code: "CART_NOT_FOUND", Message: "Không tìm thấy giỏ hàng"}
+	ErrCartItemNotFound = AppError{Code: "CART_ITEM_NOT_FOUND", Message: "Không tìm thấy sản phẩm trong giỏ hàng"}
 
-	// Report-related
-	ErrReportNotFound = AppError{Code: "REPORT_NOT_FOUND", Message: "Không tìm thấy report"}
+	ErrProvinceNotFound = AppError{Code: "PROVINCE_NOT_FOUND", Message: "Không tìm thấy tỉnh/thành phố"}
+	ErrProvinceHasWards = AppError{Code: "PROVINCE_HAS_WARDS", Message: "Không thể xóa tỉnh/thành phố có quận/huyện"}
+	ErrWardNotFound     = AppError{Code: "WARD_NOT_FOUND", Message: "Không tìm thấy quận/huyện"}
 )
