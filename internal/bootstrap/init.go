@@ -26,6 +26,7 @@ type Repos struct {
 	repo.CartRepo
 	repo.ProvinceRepo
 	repo.OrderRepo
+	repo.CategoryRepo
 }
 
 type Services struct {
@@ -38,6 +39,7 @@ type Services struct {
 	service.CartService
 	service.ProvinceService
 	service.OrderService
+	service.CategoryService
 }
 type Controllers struct {
 	controller.AdminAuthController
@@ -49,6 +51,7 @@ type Controllers struct {
 	controller.CartController
 	controller.ProvinceController
 	controller.OrderController
+	controller.CategoryController
 }
 
 func initRepos(client *mongo.Client, db *mongo.Database) *Repos {
@@ -60,6 +63,7 @@ func initRepos(client *mongo.Client, db *mongo.Database) *Repos {
 		CartRepo:              repo.NewCartRepo(db),
 		ProvinceRepo:          repo.NewProvinceRepo(db),
 		OrderRepo:             repo.NewOrderRepo(db),
+		CategoryRepo:          repo.NewCategoryRepo(db),
 	}
 }
 
@@ -72,6 +76,7 @@ func initServices(repos *Repos, redisClient *redis.Client, emailSender email.Sen
 		CartService:     service.NewCartService(repos.CartRepo, repos.ProductRepo, repos.UserRepo, eventBus, redisClient),
 		ProvinceService: service.NewProvinceService(repos.ProvinceRepo),
 		OrderService:    service.NewOrderService(repos.OrderRepo, repos.ProductRepo, repos.ProvinceRepo, repos.UserRepo),
+		CategoryService: service.NewCategoryService(repos.CategoryRepo),
 		//MembershipService:   service.NewMembershipService(repos.MembershipRepo, redisClient),
 		//ReputationService:   service.NewReputationService(repos.UserRepo, eventBus),
 		//NotificationService: service.NewNotificationService(repos.NotificationRepo, repos.UserRepo, repos.PostRepo, repos.CommentRepo, repos.CommunityRepo, eventBus, redisClient),
@@ -120,6 +125,7 @@ func initControllers(services *Services, wsHub *ws.Hub, db *mongo.Database) *Con
 		CartController:     *controller.NewCartController(services.CartService),
 		ProvinceController: *controller.NewProvinceController(services.ProvinceService),
 		OrderController:    *controller.NewOrderController(services.OrderService),
+		CategoryController: *controller.NewCategoryController(services.CategoryService),
 		//CommunityController:      *controller.NewCommunityController(services.CommunityService),
 		//MembershipController:     *controller.NewMembershipController(services.MembershipService),
 		//PostController:           *controller.NewPostController(services.PostService),
@@ -160,6 +166,7 @@ func initRoutes(controllers *Controllers, r *gin.Engine) {
 	route.RegisterProductRoutes(api, &controllers.ProductController)
 	route.RegisterProvinceRoutes(api, &controllers.ProvinceController)
 	route.RegisterOrderRoutes(api, &controllers.OrderController)
+	route.RegisterCategoryRoutes(api, &controllers.CategoryController)
 	//route.RegisterCommunityRoutes(api, &controllers.CommunityController)
 	//route.RegisterMembershipRoutes(api, &controllers.MembershipController)
 	//route.RegisterPostRoutes(api, &controllers.PostController)
