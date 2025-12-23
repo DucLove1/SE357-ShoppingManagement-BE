@@ -10,6 +10,7 @@ const (
 	CommentColName           = "comments"
 	NotificationColName      = "notifications"
 	CartColName              = "carts"
+	OrderColName             = "orders"
 	MessageColName           = "messages"
 	PostHistoryColName       = "temp"
 	EmailVerificationColName = "email_verifications"
