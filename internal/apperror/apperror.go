@@ -60,7 +60,8 @@ func StatusFromError(err error) int {
 	// 400 Bad Request
 	case isErrorType(err, ErrBadRequest, ErrInvalidID, ErrInvalidMembershipData, ErrInvalidOTP, ErrOTPExpired,
 		ErrInvalidGender, ErrInvalidDateFormat, ErrAgeTooYoung, ErrInvalidBirthDate, ErrInvalidProvince, ErrTooManyInterests, ErrInvalidInterest, ErrInsufficientStock,
-		ErrOrderCannotBeCanceled, ErrOrderCannotBeReturned, ErrInvalidOrderStatus, ErrInvalidOrderStatusTransition, ErrInvalidPaymentMethod, ErrMultipleSellersNotAllowed):
+		ErrOrderCannotBeCanceled, ErrOrderCannotBeReturned, ErrInvalidOrderStatus, ErrInvalidOrderStatusTransition, ErrInvalidPaymentMethod, ErrMultipleSellersNotAllowed,
+		ErrCategoryHasChildren, ErrCategoryHasProducts, ErrInvalidParentCategory):
 		return http.StatusBadRequest
 	// 401 Unauthorized
 	case isErrorType(err, ErrInvalidCredentials, ErrInvalidToken, ErrInvalidClaims, ErrInvalidIssuer, ErrInvalidAudience, ErrTokenInvalidated, ErrMissingAuthHeader,
@@ -72,11 +73,11 @@ func StatusFromError(err error) int {
 		return http.StatusForbidden
 	// 404 Not Found
 	case isErrorType(err, ErrUserNotFound, ErrCommunityNotFound, ErrCommunityDeleted, ErrMembershipNotFound, ErrProductNotFound, ErrCartNotFound, ErrCartItemNotFound,
-		ErrPostNotFound, ErrVoteNotFound, ErrDraftNotFound, ErrEmailNotRegistered, ErrProvinceNotFound, ErrWardNotFound, ErrOrderNotFound):
+		ErrPostNotFound, ErrVoteNotFound, ErrDraftNotFound, ErrEmailNotRegistered, ErrProvinceNotFound, ErrWardNotFound, ErrOrderNotFound, ErrCategoryNotFound):
 		return http.StatusNotFound
 	// 409 Conflict
 	case isErrorType(err, ErrUsernameExists, ErrEmailExists, ErrCommunityNameExists,
-		ErrAlreadyMember, ErrEmailAlreadyVerified, ErrLoginMethodMismatch, ErrPollVoted, ErrPollCannotEdit, ErrAlreadyReported):
+		ErrAlreadyMember, ErrEmailAlreadyVerified, ErrLoginMethodMismatch, ErrPollVoted, ErrPollCannotEdit, ErrAlreadyReported, ErrCategoryNameExists):
 		return http.StatusConflict
 	// 500 Internal Server Error
 	case isErrorType(err, ErrInternal, ErrNoFieldsToUpdate, ErrMembershipCreateFailed, ErrMembershipDeleteFailed):
@@ -178,4 +179,11 @@ var (
 	ErrInvalidOrderStatusTransition = AppError{Code: "INVALID_ORDER_STATUS_TRANSITION", Message: "Không thể chuyển sang trạng thái này"}
 	ErrInvalidPaymentMethod         = AppError{Code: "INVALID_PAYMENT_METHOD", Message: "Phương thức thanh toán không hợp lệ"}
 	ErrMultipleSellersNotAllowed    = AppError{Code: "MULTIPLE_SELLERS_NOT_ALLOWED", Message: "Một đơn hàng chỉ được mua từ một người bán"}
+
+	// Category-related
+	ErrCategoryNotFound      = AppError{Code: "CATEGORY_NOT_FOUND", Message: "Không tìm thấy danh mục"}
+	ErrCategoryNameExists    = AppError{Code: "CATEGORY_NAME_EXISTS", Message: "Tên danh mục đã tồn tại"}
+	ErrCategoryHasChildren   = AppError{Code: "CATEGORY_HAS_CHILDREN", Message: "Không thể xóa danh mục có danh mục con"}
+	ErrCategoryHasProducts   = AppError{Code: "CATEGORY_HAS_PRODUCTS", Message: "Không thể xóa danh mục đang có sản phẩm"}
+	ErrInvalidParentCategory = AppError{Code: "INVALID_PARENT_CATEGORY", Message: "Danh mục cha không hợp lệ"}
 )

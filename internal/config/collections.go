@@ -1,24 +1,18 @@
 package config
 
 const (
-	UserColName              = "users"
-	CommunityColName         = "temp"
-	CommunityBanColName      = "temp"
-	MembershipColName        = "temp"
-	ProductColName           = "products"
-	VoteColName              = "votes"
-	CommentColName           = "comments"
-	NotificationColName      = "notifications"
-	CartColName              = "carts"
-	OrderColName             = "orders"
-	MessageColName           = "messages"
-	PostHistoryColName       = "temp"
+	UserColName = "users"
+
+	ProductColName      = "products"
+	VoteColName         = "votes"
+	CommentColName      = "comments"
+	NotificationColName = "notifications"
+	CartColName         = "carts"
+	OrderColName        = "orders"
+
 	EmailVerificationColName = "email_verifications"
 	PasswordResetColName     = "password_resets"
 	SavedPostColName         = "saved_posts"
 	ReportColName            = "reports"
-	PollVoteColName          = "temp"
-	LikedPostColName         = "liked_posts"
-	UserPostHistoryColName   = "user_post_history"
-	DraftColName             = "drafts"
+	CategoryColName          = "categories"
 )
