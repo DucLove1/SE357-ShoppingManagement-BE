@@ -66,11 +66,12 @@ func StatusFromError(err error) int {
 		ErrInvalidAuthHeader, ErrMissingToken, ErrNotAuthenticated, ErrSellerAccessRequired):
 		return http.StatusUnauthorized
 	// 403 Forbidden
-	case isErrorType(err, ErrForbidden, ErrUserInactive, ErrUserNotMember, ErrEmailNotVerified, ErrAdminAccessRequired, ErrProductNotAvailable, ErrVariantNotFound, ErrVariantRequired):
+	case isErrorType(err, ErrForbidden, ErrUserInactive, ErrUserNotMember, ErrEmailNotVerified, ErrAdminAccessRequired,
+		ErrProvinceHasWards, ErrProductNotAvailable, ErrVariantNotFound, ErrVariantRequired):
 		return http.StatusForbidden
 	// 404 Not Found
 	case isErrorType(err, ErrUserNotFound, ErrCommunityNotFound, ErrCommunityDeleted, ErrMembershipNotFound, ErrProductNotFound, ErrCartNotFound, ErrCartItemNotFound,
-		ErrPostNotFound, ErrVoteNotFound, ErrDraftNotFound, ErrEmailNotRegistered):
+		ErrPostNotFound, ErrVoteNotFound, ErrDraftNotFound, ErrEmailNotRegistered, ErrProvinceNotFound, ErrWardNotFound):
 		return http.StatusNotFound
 	// 409 Conflict
 	case isErrorType(err, ErrUsernameExists, ErrEmailExists, ErrCommunityNameExists,
@@ -164,4 +165,8 @@ var (
 	// Cart-related
 	ErrCartNotFound     = AppError{Code: "CART_NOT_FOUND", Message: "Không tìm thấy giỏ hàng"}
 	ErrCartItemNotFound = AppError{Code: "CART_ITEM_NOT_FOUND", Message: "Không tìm thấy sản phẩm trong giỏ hàng"}
+
+	ErrProvinceNotFound = AppError{Code: "PROVINCE_NOT_FOUND", Message: "Không tìm thấy tỉnh/thành phố"}
+	ErrProvinceHasWards = AppError{Code: "PROVINCE_HAS_WARDS", Message: "Không thể xóa tỉnh/thành phố có quận/huyện"}
+	ErrWardNotFound     = AppError{Code: "WARD_NOT_FOUND", Message: "Không tìm thấy quận/huyện"}
 )
