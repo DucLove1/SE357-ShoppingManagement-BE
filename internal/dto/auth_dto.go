@@ -23,7 +23,7 @@ type CompleteSellerRegistrationRequest struct {
 	Password          string `json:"password" binding:"required,min=6"`
 
 	PhoneNumber   string           `json:"phone_number" binding:"required,len=10"`
-	Categories    []model.Category `json:"categories" binding:"required"`
+	Categories    []model.Category `json:"categories" `
 	PickupAddress model.Address    `json:"pickup_address" binding:"required"`
 
 	IdentityCard      string      `bson:"identity_card,omitempty" json:"identity_card,required"`
