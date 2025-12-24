@@ -89,101 +89,98 @@ func StatusFromError(err error) int {
 
 var (
 	// Auth-related
-	ErrInvalidCredentials   = AppError{Code: "INVALID_CREDENTIALS", Message: "Email hoặc mật khẩu không đúng"}
-	ErrInvalidToken         = AppError{Code: "INVALID_TOKEN", Message: "Token không hợp lệ hoặc đã hết hạn"}
-	ErrInvalidClaims        = AppError{Code: "INVALID_CLAIMS", Message: "Thông tin token không hợp lệ"}
-	ErrInvalidIssuer        = AppError{Code: "INVALID_ISSUER", Message: "Nguồn phát hành token không hợp lệ"}
-	ErrInvalidAudience      = AppError{Code: "INVALID_AUDIENCE", Message: "Đối tượng token không hợp lệ"}
-	ErrTokenInvalidated     = AppError{Code: "TOKEN_INVALIDATED", Message: "Token đã bị vô hiệu hóa"}
-	ErrMissingAuthHeader    = AppError{Code: "MISSING_AUTH_HEADER", Message: "Thiếu Authorization header"}
-	ErrInvalidAuthHeader    = AppError{Code: "INVALID_AUTH_HEADER", Message: "Định dạng Authorization header không hợp lệ"}
-	ErrMissingToken         = AppError{Code: "MISSING_TOKEN", Message: "Thiếu token xác thực"}
-	ErrNotAuthenticated     = AppError{Code: "NOT_AUTHENTICATED", Message: "Chưa xác thực"}
-	ErrInvalidAuthContext   = AppError{Code: "INVALID_AUTH_CONTEXT", Message: "Ngữ cảnh xác thực không hợp lệ"}
-	ErrAdminAccessRequired  = AppError{Code: "ADMIN_ACCESS_REQUIRED", Message: "Cần quyền quản trị viên"}
-	ErrSellerAccessRequired = AppError{Code: "SELLER_ACCESS_REQUIRED", Message: "Cần quyền người bán"}
-	ErrForbidden            = AppError{Code: "FORBIDDEN", Message: "Bạn không có quyền thực hiện hành động này"}
-	ErrBadRequest           = AppError{Code: "BAD_REQUEST", Message: "Yêu cầu không hợp lệ"}
-	ErrEmailNotVerified     = AppError{Code: "EMAIL_NOT_VERIFIED", Message: "Email chưa được xác thực"}
-	ErrEmailAlreadyVerified = AppError{Code: "EMAIL_ALREADY_VERIFIED", Message: "Email đã được xác thực"}
-	ErrInvalidOTP           = AppError{Code: "INVALID_OTP", Message: "Mã xác thực không đúng"}
-	ErrOTPExpired           = AppError{Code: "OTP_EXPIRED", Message: "Mã xác thực đã hết hạn"}
-	ErrLoginMethodMismatch  = AppError{Code: "LOGIN_METHOD_MISMATCH", Message: "Email này đã được đăng ký bằng phương thức khác. Vui lòng sử dụng phương thức đăng nhập ban đầu."}
-	ErrEmailNotRegistered   = AppError{Code: "EMAIL_NOT_REGISTERED", Message: "Email chưa được đăng ký"}
-
+	ErrInvalidCredentials   = AppError{Code: "INVALID_CREDENTIALS", Message: "Email or password is incorrect"}
+	ErrInvalidToken         = AppError{Code: "INVALID_TOKEN", Message: "Token is invalid or expired"}
+	ErrInvalidClaims        = AppError{Code: "INVALID_CLAIMS", Message: "Invalid token claims"}
+	ErrInvalidIssuer        = AppError{Code: "INVALID_ISSUER", Message: "Invalid token issuer"}
+	ErrInvalidAudience      = AppError{Code: "INVALID_AUDIENCE", Message: "Invalid token audience"}
+	ErrTokenInvalidated     = AppError{Code: "TOKEN_INVALIDATED", Message: "Token has been invalidated"}
+	ErrMissingAuthHeader    = AppError{Code: "MISSING_AUTH_HEADER", Message: "Missing Authorization header"}
+	ErrInvalidAuthHeader    = AppError{Code: "INVALID_AUTH_HEADER", Message: "Invalid Authorization header format"}
+	ErrMissingToken         = AppError{Code: "MISSING_TOKEN", Message: "Missing authentication token"}
+	ErrNotAuthenticated     = AppError{Code: "NOT_AUTHENTICATED", Message: "Not authenticated"}
+	ErrInvalidAuthContext   = AppError{Code: "INVALID_AUTH_CONTEXT", Message: "Invalid authentication context"}
+	ErrAdminAccessRequired  = AppError{Code: "ADMIN_ACCESS_REQUIRED", Message: "Admin access required"}
+	ErrSellerAccessRequired = AppError{Code: "SELLER_ACCESS_REQUIRED", Message: "Seller access required"}
+	ErrForbidden            = AppError{Code: "FORBIDDEN", Message: "You do not have permission to perform this action"}
+	ErrBadRequest           = AppError{Code: "BAD_REQUEST", Message: "Bad request"}
+	ErrEmailNotVerified     = AppError{Code: "EMAIL_NOT_VERIFIED", Message: "Email not verified"}
+	ErrEmailAlreadyVerified = AppError{Code: "EMAIL_ALREADY_VERIFIED", Message: "Email already verified"}
+	ErrInvalidOTP           = AppError{Code: "INVALID_OTP", Message: "Invalid OTP"}
+	ErrOTPExpired           = AppError{Code: "OTP_EXPIRED", Message: "OTP has expired"}
+	ErrLoginMethodMismatch  = AppError{Code: "LOGIN_METHOD_MISMATCH", Message: "This email has been registered using a different login method. Please use the original login method."}
+	ErrEmailNotRegistered   = AppError{Code: "EMAIL_NOT_REGISTERED", Message: "Email not registered"}
 	// Generic
-	ErrInternal          = AppError{Code: "INTERNAL_ERROR", Message: "Lỗi hệ thống"}
-	ErrNoFieldsToUpdate  = AppError{Code: "NO_FIELDS_TO_UPDATE", Message: "Không có trường nào để cập nhật"}
-	ErrInvalidID         = AppError{Code: "INVALID_ID", Message: "Định dạng ID không hợp lệ"}
-	ErrPaginationInvalid = AppError{Code: "PAGINATION_INVALID", Message: "Số trang hoặc kích thước trang không hợp lệ. Kích thước trang phải nhỏ hơn 500."}
+	ErrInternal          = AppError{Code: "INTERNAL_ERROR", Message: "Internal server error"}
+	ErrNoFieldsToUpdate  = AppError{Code: "NO_FIELDS_TO_UPDATE", Message: "No fields to update"}
+	ErrInvalidID         = AppError{Code: "INVALID_ID", Message: "Invalid ID format"}
+	ErrPaginationInvalid = AppError{Code: "PAGINATION_INVALID", Message: "Invalid page number or page size. Page size must be less than 500."}
 
 	// User-related
-	ErrUserNotFound   = AppError{Code: "USER_NOT_FOUND", Message: "Không tìm thấy người dùng"}
-	ErrUsernameExists = AppError{Code: "USERNAME_EXISTS", Message: "Tên người dùng đã tồn tại"}
-	ErrEmailExists    = AppError{Code: "EMAIL_EXISTS", Message: "Email đã được sử dụng"}
-	ErrUserInactive   = AppError{Code: "USER_INACTIVE", Message: "Tài khoản người dùng đã bị vô hiệu hóa"}
+	ErrUserNotFound   = AppError{Code: "USER_NOT_FOUND", Message: "User not found"}
+	ErrUsernameExists = AppError{Code: "USERNAME_EXISTS", Message: "Username already exists"}
+	ErrEmailExists    = AppError{Code: "EMAIL_EXISTS", Message: "Email already exists"}
+	ErrUserInactive   = AppError{Code: "USER_INACTIVE", Message: "User account has been deactivated"}
 
 	// Profile validation
-	ErrInvalidGender     = AppError{Code: "INVALID_GENDER", Message: "Giá trị giới tính không hợp lệ"}
-	ErrInvalidDateFormat = AppError{Code: "INVALID_DATE_FORMAT", Message: "Định dạng ngày không hợp lệ, sử dụng YYYY-MM-DD"}
-	ErrAgeTooYoung       = AppError{Code: "AGE_TOO_YOUNG", Message: "Phải từ 13 tuổi trở lên"}
-	ErrInvalidBirthDate  = AppError{Code: "INVALID_BIRTH_DATE", Message: "Ngày sinh không hợp lệ"}
-	ErrInvalidProvince   = AppError{Code: "INVALID_PROVINCE", Message: "Tỉnh/thành phố không hợp lệ"}
-	ErrTooManyInterests  = AppError{Code: "TOO_MANY_INTERESTS", Message: "Tối đa 10 sở thích"}
-	ErrInvalidInterest   = AppError{Code: "INVALID_INTEREST", Message: "Sở thích không hợp lệ"}
-
+	ErrInvalidGender     = AppError{Code: "INVALID_GENDER", Message: "Invalid gender value"}
+	ErrInvalidDateFormat = AppError{Code: "INVALID_DATE_FORMAT", Message: "Invalid date format, use YYYY-MM-DD"}
+	ErrAgeTooYoung       = AppError{Code: "AGE_TOO_YOUNG", Message: "Must be at least 13 years old"}
+	ErrInvalidBirthDate  = AppError{Code: "INVALID_BIRTH_DATE", Message: "Invalid birth date"}
+	ErrInvalidProvince   = AppError{Code: "INVALID_PROVINCE", Message: "Invalid province"}
+	ErrTooManyInterests  = AppError{Code: "TOO_MANY_INTERESTS", Message: "Maximum of 10 interests"}
+	ErrInvalidInterest   = AppError{Code: "INVALID_INTEREST", Message: "Invalid interest"}
 	// Community-related
-	ErrCommunityNotFound         = AppError{Code: "COMMUNITY_NOT_FOUND", Message: "Không tìm thấy cộng đồng"}
-	ErrCommunityNameExists       = AppError{Code: "COMMUNITY_NAME_EXISTS", Message: "Tên cộng đồng đã tồn tại"}
-	ErrCommunityDeleted          = AppError{Code: "COMMUNITY_DELETED", Message: "Cộng đồng đã bị xóa"}
-	ErrModeratorAlreadyExists    = AppError{Code: "MODERATOR_ALREADY_EXISTS", Message: "Người dùng đã là moderator của cộng đồng."}
-	ErrCannotRemoveModerator     = AppError{Code: "CANNOT_REMOVE_MODERATOR", Message: "Không thể xóa moderator này."}
-	ErrCannotRemoveCreator       = AppError{Code: "CANNOT_REMOVE_CREATOR", Message: "Không thể xóa người tạo cộng đồng khỏi danh sách moderator."}
-	ErrUserIsBannedFromCommunity = AppError{Code: "BANNED_COMMUNITY", Message: "Người dùng đã bị ban khỏi cộng đồng."}
+	ErrCommunityNotFound         = AppError{Code: "COMMUNITY_NOT_FOUND", Message: "Community not found"}
+	ErrCommunityNameExists       = AppError{Code: "COMMUNITY_NAME_EXISTS", Message: "Community name already exists"}
+	ErrCommunityDeleted          = AppError{Code: "COMMUNITY_DELETED", Message: "Community has been deleted"}
+	ErrModeratorAlreadyExists    = AppError{Code: "MODERATOR_ALREADY_EXISTS", Message: "User is already a moderator of the community."}
+	ErrCannotRemoveModerator     = AppError{Code: "CANNOT_REMOVE_MODERATOR", Message: "Cannot remove this moderator."}
+	ErrCannotRemoveCreator       = AppError{Code: "CANNOT_REMOVE_CREATOR", Message: "Cannot remove the community creator from the list of moderators."}
+	ErrUserIsBannedFromCommunity = AppError{Code: "BANNED_COMMUNITY", Message: "User has been banned from the community."}
 
 	// Membership-related
-	ErrUserNotMember          = AppError{Code: "USER_NOT_MEMBER", Message: "Bạn chưa tham gia cộng đồng này"}
-	ErrMembershipNotFound     = AppError{Code: "MEMBERSHIP_NOT_FOUND", Message: "Không tìm thấy thành viên"}
-	ErrAlreadyMember          = AppError{Code: "ALREADY_MEMBER", Message: "Bạn đã là thành viên của cộng đồng này"}
-	ErrMembershipCreateFailed = AppError{Code: "MEMBERSHIP_CREATE_FAILED", Message: "Không thể tạo thành viên"}
-	ErrMembershipDeleteFailed = AppError{Code: "MEMBERSHIP_DELETE_FAILED", Message: "Không thể xóa thành viên"}
-	ErrInvalidMembershipData  = AppError{Code: "INVALID_MEMBERSHIP_DATA", Message: "Dữ liệu thành viên không hợp lệ"}
+	ErrUserNotMember          = AppError{Code: "USER_NOT_MEMBER", Message: "You are not a member of this community"}
+	ErrMembershipNotFound     = AppError{Code: "MEMBERSHIP_NOT_FOUND", Message: "Member not found"}
+	ErrAlreadyMember          = AppError{Code: "ALREADY_MEMBER", Message: "You are already a member of this community"}
+	ErrMembershipCreateFailed = AppError{Code: "MEMBERSHIP_CREATE_FAILED", Message: "Failed to create member"}
+	ErrMembershipDeleteFailed = AppError{Code: "MEMBERSHIP_DELETE_FAILED", Message: "Failed to delete member"}
+	ErrInvalidMembershipData  = AppError{Code: "INVALID_MEMBERSHIP_DATA", Message: "Invalid membership data"}
 
 	// Post-related
-	ErrPostNotFound    = AppError{Code: "POST_NOT_FOUND", Message: "Không tìm thấy bài viết"}
-	ErrVoteNotFound    = AppError{Code: "VOTE_NOT_FOUND", Message: "Không tìm thấy bình chọn"}
-	ErrPollVoted       = AppError{Code: "POLL_ALREADY_VOTED", Message: "Bạn đã bình chọn lựa chọn này rồi"}
-	ErrPollCannotEdit  = AppError{Code: "POLL_CANNOT_EDIT", Message: "Không thể chỉnh sửa bình chọn sau khi đã có người bình chọn"}
-	ErrAlreadyReported = AppError{Code: "ALREADY_REPORTED", Message: "Bạn đã báo cáo nội dung này rồi"}
-	ErrDraftNotFound   = AppError{Code: "DRAFT_NOT_FOUND", Message: "Không tìm thấy bản nháp"}
+	ErrPostNotFound    = AppError{Code: "POST_NOT_FOUND", Message: "Post not found"}
+	ErrVoteNotFound    = AppError{Code: "VOTE_NOT_FOUND", Message: "Vote not found"}
+	ErrPollVoted       = AppError{Code: "POLL_ALREADY_VOTED", Message: "You have already voted for this option"}
+	ErrPollCannotEdit  = AppError{Code: "POLL_CANNOT_EDIT", Message: "Cannot edit poll after voting has occurred"}
+	ErrAlreadyReported = AppError{Code: "ALREADY_REPORTED", Message: "You have already reported this content"}
+	ErrDraftNotFound   = AppError{Code: "DRAFT_NOT_FOUND", Message: "Draft not found"}
 
 	// Product-related
-	ErrProductNotFound     = AppError{Code: "PRODUCT_NOT_FOUND", Message: "Không tìm thấy sản phẩm"}
-	ErrProductNotAvailable = AppError{Code: "PRODUCT_NOT_AVAILABLE", Message: "Sản phẩm không khả dụng"}
-	ErrVariantNotFound     = AppError{Code: "VARIANT_NOT_FOUND", Message: "Không tìm thấy biến thể sản phẩm"}
-	ErrVariantRequired     = AppError{Code: "VARIANT_REQUIRED", Message: "Yêu cầu chọn biến thể cho sản phẩm này"}
-	ErrInsufficientStock   = AppError{Code: "INSUFFICIENT_STOCK", Message: "Không đủ hàng trong kho"}
+	ErrProductNotFound     = AppError{Code: "PRODUCT_NOT_FOUND", Message: "Product not found"}
+	ErrProductNotAvailable = AppError{Code: "PRODUCT_NOT_AVAILABLE", Message: "Product not available"}
+	ErrVariantNotFound     = AppError{Code: "VARIANT_NOT_FOUND", Message: "Product variant not found"}
+	ErrVariantRequired     = AppError{Code: "VARIANT_REQUIRED", Message: "Variant selection is required for this product"}
+	ErrInsufficientStock   = AppError{Code: "INSUFFICIENT_STOCK", Message: "Insufficient stock available"}
 
 	// Cart-related
-	ErrCartNotFound     = AppError{Code: "CART_NOT_FOUND", Message: "Không tìm thấy giỏ hàng"}
-	ErrCartItemNotFound = AppError{Code: "CART_ITEM_NOT_FOUND", Message: "Không tìm thấy sản phẩm trong giỏ hàng"}
+	ErrCartNotFound     = AppError{Code: "CART_NOT_FOUND", Message: "Cart not found"}
+	ErrCartItemNotFound = AppError{Code: "CART_ITEM_NOT_FOUND", Message: "Cart item not found"}
+	ErrProvinceNotFound = AppError{Code: "PROVINCE_NOT_FOUND", Message: "Province not found"}
+	ErrProvinceHasWards = AppError{Code: "PROVINCE_HAS_WARDS", Message: "Cannot delete province with wards"}
+	ErrWardNotFound     = AppError{Code: "WARD_NOT_FOUND", Message: "Ward not found"}
 
-	ErrProvinceNotFound = AppError{Code: "PROVINCE_NOT_FOUND", Message: "Không tìm thấy tỉnh/thành phố"}
-	ErrProvinceHasWards = AppError{Code: "PROVINCE_HAS_WARDS", Message: "Không thể xóa tỉnh/thành phố có quận/huyện"}
-	ErrWardNotFound     = AppError{Code: "WARD_NOT_FOUND", Message: "Không tìm thấy quận/huyện"}
-
-	ErrOrderNotFound                = AppError{Code: "ORDER_NOT_FOUND", Message: "Không tìm thấy đơn hàng"}
-	ErrOrderCannotBeCanceled        = AppError{Code: "ORDER_CANNOT_BE_CANCELED", Message: "Đơn hàng không thể hủy ở trạng thái hiện tại"}
-	ErrOrderCannotBeReturned        = AppError{Code: "ORDER_CANNOT_BE_RETURNED", Message: "Đơn hàng không thể trả ở trạng thái hiện tại"}
-	ErrInvalidOrderStatus           = AppError{Code: "INVALID_ORDER_STATUS", Message: "Trạng thái đơn hàng không hợp lệ"}
-	ErrInvalidOrderStatusTransition = AppError{Code: "INVALID_ORDER_STATUS_TRANSITION", Message: "Không thể chuyển sang trạng thái này"}
-	ErrInvalidPaymentMethod         = AppError{Code: "INVALID_PAYMENT_METHOD", Message: "Phương thức thanh toán không hợp lệ"}
-	ErrMultipleSellersNotAllowed    = AppError{Code: "MULTIPLE_SELLERS_NOT_ALLOWED", Message: "Một đơn hàng chỉ được mua từ một người bán"}
+	ErrOrderNotFound                = AppError{Code: "ORDER_NOT_FOUND", Message: "Order not found"}
+	ErrOrderCannotBeCanceled        = AppError{Code: "ORDER_CANNOT_BE_CANCELED", Message: "Order cannot be canceled in the current status"}
+	ErrOrderCannotBeReturned        = AppError{Code: "ORDER_CANNOT_BE_RETURNED", Message: "Order cannot be returned in the current status"}
+	ErrInvalidOrderStatus           = AppError{Code: "INVALID_ORDER_STATUS", Message: "Invalid order status"}
+	ErrInvalidOrderStatusTransition = AppError{Code: "INVALID_ORDER_STATUS_TRANSITION", Message: "Invalid order status transition"}
+	ErrInvalidPaymentMethod         = AppError{Code: "INVALID_PAYMENT_METHOD", Message: "Invalid payment method"}
+	ErrMultipleSellersNotAllowed    = AppError{Code: "MULTIPLE_SELLERS_NOT_ALLOWED", Message: "An order can only be purchased from one seller"}
 
 	// Category-related
-	ErrCategoryNotFound      = AppError{Code: "CATEGORY_NOT_FOUND", Message: "Không tìm thấy danh mục"}
-	ErrCategoryNameExists    = AppError{Code: "CATEGORY_NAME_EXISTS", Message: "Tên danh mục đã tồn tại"}
-	ErrCategoryHasChildren   = AppError{Code: "CATEGORY_HAS_CHILDREN", Message: "Không thể xóa danh mục có danh mục con"}
-	ErrCategoryHasProducts   = AppError{Code: "CATEGORY_HAS_PRODUCTS", Message: "Không thể xóa danh mục đang có sản phẩm"}
-	ErrInvalidParentCategory = AppError{Code: "INVALID_PARENT_CATEGORY", Message: "Danh mục cha không hợp lệ"}
+	ErrCategoryNotFound      = AppError{Code: "CATEGORY_NOT_FOUND", Message: "Category not found"}
+	ErrCategoryNameExists    = AppError{Code: "CATEGORY_NAME_EXISTS", Message: "Category name already exists"}
+	ErrCategoryHasChildren   = AppError{Code: "CATEGORY_HAS_CHILDREN", Message: "Cannot delete category with child categories"}
+	ErrCategoryHasProducts   = AppError{Code: "CATEGORY_HAS_PRODUCTS", Message: "Cannot delete category with products"}
+	ErrInvalidParentCategory = AppError{Code: "INVALID_PARENT_CATEGORY", Message: "Invalid parent category"}
 )
