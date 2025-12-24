@@ -2,13 +2,12 @@ package route
 
 import (
 	"github.com/DucLove1/SE357-ShoppingManagement-BE/internal/controller"
-	"github.com/DucLove1/SE357-ShoppingManagement-BE/internal/middleware"
 	"github.com/gin-gonic/gin"
 )
 
 func RegisterMediaRoutes(rg *gin.RouterGroup, c *controller.MediaController) {
 	media := rg.Group("/media")
-	media.Use(middleware.RequireAuth())
+	media.Use()
 	{
 		// Upload
 		media.POST("/image", c.UploadImage)
