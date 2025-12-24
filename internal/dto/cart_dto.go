@@ -9,7 +9,7 @@ import (
 type AddCartItemRequest struct {
 	ProductID string  `json:"product_id" validate:"required"`
 	VariantID *string `json:"variant_id,omitempty"`
-	Quantity  int     `json:"quantity" validate:"required,min=1"`
+	Quantity  int     `json:"quantity" validate:"required"`
 }
 
 type UpdateCartItemRequest struct {
